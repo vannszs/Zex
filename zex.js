@@ -1992,19 +1992,17 @@ break
                 if (!q) return reply(`Masukan parameter text\n*Contoh:*\n${prefix+command} hallo`)
                 let db_orang = JSON.parse(fs.readFileSync('./database/user.json'));
                 let data_teks = `${q}`
-                let btn_menu = [
-                  {buttonId: `${prefix}menu`, buttonText: { displayText: 'Menu' }, type: 1 },
-                  {buttonId: `${prefix}donasi`, buttonText: { displayText: 'Support Buat Beli Server : D' }, type: 1 },
-                  ]
                 for (let i of db_orang){ 
-                var button_broadcast = {text: data_teks, footer: '©broadcast', buttons:btn_menu,headerType: 1}
-                
-                conn.sendMessage(i.id, button_broadcast)
-                await sleep(2000)
+                  var text_broadcast = {
+                    text: `${data_teks}\n\n©broadcast`,
+                    headerType: 1
+                  };
+                 
+                Zex.sendMessage(i.id, text_broadcast)
+                await sleep(5000)
                 }
                 reply(`*Sukses mengirim broadcast text ke ${db_orang.length} user*`)
-                            }
-                            break
+                }
                             case 'broadcastimage': case 'bcimage': case 'broadcastvideo': case 'broadcastvid':
 if(!XeonTheCreator) return replygcxeon(mess.owner)
         if (!q) return replygcxeon(`Enter text`)
