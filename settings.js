@@ -62,6 +62,8 @@ global.mess = {
     linkm: 'Where is the link?',
     endLimit: 'Your Daily Limit Has Expired, The Limit Will Be Reset Every 12 Hours',
     nsfw: 'The nsfw feature has not been activated, please contact the admin to activate',
+    OnlyUser: "You must be registered first",
+    blocked : "You are blocked to use the bot"
 }
 
 let file = require.resolve(__filename)

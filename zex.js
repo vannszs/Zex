@@ -34,7 +34,6 @@ const StickerXeon = JSON.parse(fs.readFileSync('./media/database/xeonsticker.jso
 const ImageXeon = JSON.parse(fs.readFileSync('./media/database/xeonimage.json'))
 const VideoXeon = JSON.parse(fs.readFileSync('./media/database/xeonvideo.json'))
 const BadXeon = JSON.parse(fs.readFileSync('./database/bad.json'))
-
 let autosticker = JSON.parse(fs.readFileSync('./database/autosticker.json'));
 let ntnsfw = JSON.parse(fs.readFileSync('./database/nsfw.json'));
 let ntvirtex = JSON.parse(fs.readFileSync('./database/antivirus.json'));
@@ -1999,9 +1998,9 @@ break
                   };
                  
                 Zex.sendMessage(i.id, text_broadcast)
-                await sleep(5000)
+                await sleep(10000)
                 }
-                reply(`*Sukses mengirim broadcast text ke ${db_orang.length} user*`)
+                replygcxeon(`*Sukses mengirim broadcast text ke ${db_orang.length} user*`)
                 }
                             case 'broadcastimage': case 'bcimage': case 'broadcastvideo': case 'broadcastvid':
 if(!XeonTheCreator) return replygcxeon(mess.owner)
@@ -2024,10 +2023,49 @@ await Zex.sendMessage(i, { video:media,  caption: txt, mentions:participants.map
         replygcxeon(`Successfuly Broadcasted in ${xeoncast.length} Groups`)      
         break
 case 'block': {
-		if (!XeonTheCreator) return replygcxeon(mess.owner)
-		let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+    if(!isowner) return reply(mess.owner)
+        if(isowner){
+            if (text.includes('5381568989')) {
+                return reply('eakk, mau block owner kah maniez? ')
+              }
+        if (!text) return reply('*Contoh:*\n.block 628xxx')
+		let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '').replace(/^0/, '62') + '@s.whatsapp.net';
+
 		await Zex.updateBlockStatus(users, 'block').then((res) => replygcxeon(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
 	}
+}
+    break;
+    case 'block2': {
+        if (XeonTheCreator) {
+          if (!quoted) return reply('*Contoh:*\n.block 628xxx')
+          let number = q.replace(/[^0-9]/g, "") // Hapus karakter selain angka dari nomor yang dikirim
+          let number_one = number.startsWith('0') ? '62' + number.substring(1) : number // Ubah format nomor jika dimulai dengan '0'
+          if (number_one + '@s.whatsapp.net' == `${ownerNumber}@s.whatsapp.net`) return reply("Tidak bisa memblokir owner")
+          let index = db_user.findIndex(user => user.id === number_one + '@s.whatsapp.net')
+          if (index !== -1) {
+            db_user[index].block = true
+            fs.writeFileSync('./database/pengguna.json', JSON.stringify(db_user, null, 2))
+            reply('Pengguna berhasil diblokir oleh bot.')
+          } else {
+            reply('User tidak ditemukan di database.')
+          }
+        } else {
+          let user = cekUser("id", sender)
+          if (user == null) {
+            return reply(mess.OnlyUser)
+          } else {
+            let index = db_user.findIndex(user => user.id === sender)
+            if (index !== -1) {
+              db_user[index].block = true
+              fs.writeFileSync('./database/pengguna.json', JSON.stringify(db_user, null, 2))
+              reply('Pengguna berhasil diblock dari bot.')
+            } else {
+              reply('User tidak ditemukan di database.')
+            }
+          }
+        }
+        break;
+      }
 	break
         case 'unblock': {
 		if (!XeonTheCreator) return replygcxeon(mess.owner)
@@ -2734,7 +2772,7 @@ let anu = await fetchJson(`https://xeonapi.onrender.com/api/dowloader/fbdown?url
 Zex.sendMessage(m.chat, { video: { url: anu.result.HD }, caption: 'Here you go!.'}, {quoted: m})
 }
 break
-case 'tiktok':{ 
+case 'tiktokvideo':{ 
 if (!text) return replygcxeon( `Example : ${prefix + command} link`)
 if (!q.includes('tiktok')) return replygcxeon(`Link Invalid!!`)
 replygcxeon(mess.wait)
@@ -3533,6 +3571,26 @@ await fs.unlinkSync(encmedia)
 } else {
 replygcxeon(`Send/Reply Images/Videos/Gifs With Captions ${prefix+command}\nVideo Duration 1-9 Seconds`)
 }
+}
+break;
+case 'smeme':
+case 'stikermeme':
+case 'stickermeme':
+case 'memestiker':
+if (cekUser("id", sender) == null) return reply(mess.OnlyUser)
+if (cekUser("block", sender) == true) return reply(mess.blocked)
+var atas = q.split('|')[0]
+var bawah = q.split('|')[1]
+if (!atas) return reply(`Kirim gambar dengan caption ${prefix+command} text_atas|text_bawah atau balas gambar yang sudah dikirim`)
+if (!bawah) return reply(`Kirim gambar dengan caption ${prefix+command} text_atas|text_bawah atau balas gambar yang sudah dikirim`)
+if (isImage || isQuotedImage){
+reply(mess.wait)
+var media = await Zex.downloadAndSaveMediaMessage(msg, 'image', `./sticker/${sender.split('@')[0]}.jpg`)
+var media_url = (await UploadFileUgu(media)).url
+var meme_url = `https://api.memegen.link/images/custom/${encodeURIComponent(atas)}/${encodeURIComponent(bawah)}.png?background=${media_url}`
+var opt = { packname: 'Vannn', author: 'Otomatis Oleh bot' }
+Zex.sendImageAsSticker(from, meme_url, msg, opt)
+fs.unlinkSync(media)
 }
 break
 case 'stupid':
