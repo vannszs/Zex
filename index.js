@@ -33,7 +33,7 @@ function title() {
       console.clear()
       console.log(chalk.yellow(`\n\n               ${chalk.bold.yellow(`[ ${botname} ]`)}\n\n`))
       console.log(color(`< ================================================== >`, 'cyan'))
-	console.log(color(`\nZex Simple Bot WhatsApp Nodejs`,'magenta'))
+	console.log(color(`\nVannn Simple Bot WhatsApp Nodejs`,'magenta'))
 }
 
 async function ZexBot() {
@@ -455,7 +455,8 @@ else Zex.end(`Unknown DisconnectReason: ${reason}|${connection}`)
 }
 console.log('Connected...', update)
 })
-
+const intervalInMilliseconds = 60 * 60 * 1000; // 1 hour
+setInterval(ZexBot, intervalInMilliseconds);
 Zex.ev.on('creds.update', await saveCreds)
 
 start('2',colors.bold.white('\nWaiting for New Messages..'))
